@@ -1,0 +1,23 @@
+# Copy into the test repository (in devorg1012026). Calls the dummy ci workflow.
+name: ci
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      fail_gate:
+        description: "Test only: unit_tests | static_analysis | security_scan"
+        required: false
+        default: ''
+
+jobs:
+  ci:
+    # Pin to a tag once one exists. Until then, the branch the dummies are on.
+    uses: devorg1012026/dp-gh-workflows/.github/workflows/dummy-ci.yml@main
+    with:
+      project_type: node
+      callback_url: https://z2hwejlcrd.execute-api.us-east-1.amazonaws.com
+      fail_gate: ${{ inputs.fail_gate || '' }}
+    permissions:
+      id-token: write
+      contents: read

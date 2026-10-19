@@ -1,0 +1,44 @@
+# Copy into the test repository (in devorg1012026). In real use only the
+# platform dispatches this. For the dummy you can run it by hand.
+name: "cd"
+on:
+  workflow_dispatch:
+    inputs:
+      build_id:
+        required: true
+      artifact_type:
+        required: true
+        default: image
+      artifact_uri:
+        required: true
+      artifact_digest:
+        required: true
+      slot:
+        required: true
+        default: dev1
+      stage:
+        required: true
+        default: dev
+      correlation_id:
+        required: true
+        default: manual-test
+      fail_deploy:
+        required: false
+        default: 'false'
+run-name: Deploy to ${{ inputs.stage }} / ${{ inputs.slot }}
+jobs:
+  cd:
+    uses: devorg1012026/dp-gh-workflows/.github/workflows/dummy-cd.yml@main
+    with:
+      build_id: ${{ inputs.build_id }}
+      artifact_type: ${{ inputs.artifact_type }}
+      artifact_uri: ${{ inputs.artifact_uri }}
+      artifact_digest: ${{ inputs.artifact_digest }}
+      slot: ${{ inputs.slot }}
+      stage: ${{ inputs.stage }}
+      correlation_id: ${{ inputs.correlation_id }}
+      callback_url: https://z2hwejlcrd.execute-api.us-east-1.amazonaws.com
+      fail_deploy: ${{ inputs.fail_deploy || 'false' }}
+    permissions:
+      id-token: write
+      contents: read

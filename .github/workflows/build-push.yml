@@ -1,0 +1,22 @@
+# Copy into the test repository (in devorg1012026). Calls the dummy build workflow.
+name: build-push
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      fail_build:
+        description: "Test only: 'true' makes the build fail"
+        required: false
+        default: 'false'
+
+jobs:
+  build:
+    uses: devorg1012026/dp-gh-workflows/.github/workflows/dummy-build-push.yml@main
+    with:
+      project_type: node
+      callback_url: https://z2hwejlcrd.execute-api.us-east-1.amazonaws.com
+      fail_build: ${{ inputs.fail_build || 'false' }}
+    permissions:
+      id-token: write
+      contents: read
